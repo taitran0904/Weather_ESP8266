@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1089846435222",
+    "firebase_url": "https://weather-app-aee77-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "weather-app-aee77",
+    "storage_bucket": "weather-app-aee77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089846435222:android:82f25dd3f62157ef2791b7",
+        "android_client_info": {
+          "package_name": "com.weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089846435222-e6aquma46g0m5fc1jo61lujig29nj3v9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVKvG8t-VSCmoTN0vPBctAkAb9PPwly90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089846435222-e6aquma46g0m5fc1jo61lujig29nj3v9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
