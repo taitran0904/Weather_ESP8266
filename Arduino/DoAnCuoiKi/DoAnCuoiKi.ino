@@ -11,7 +11,8 @@ int gasSensor;
 
 #define DHTPIN 2
 #define DHTTYPE DHT22
-#define buzzerPin 16 
+#define BUZZER_PIN 13 
+#define LED_PIN 15
 
 #define WIFI_SSID "KhanhHom24ghz"
 #define WIFI_PASSWORD "kiettuan91"
@@ -55,6 +56,8 @@ byte degreeChar[8] = {
 
 void setup()
 {
+    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(LED_PIN, OUTPUT);
     lcd.init();
     lcd.backlight();
     lcd.begin(16, 2);
@@ -63,7 +66,6 @@ void setup()
     Serial.begin(115200);
     Serial.println();
     Serial.println();
-
   
     dht.begin();
 
@@ -96,22 +98,10 @@ void setup()
 
     Firebase.begin(&config, &auth);
 
-   
     Firebase.reconnectWiFi(true);
 
     fbdo.setBSSLBufferSize(512, 2048);
 }
-
-void Sensor(){
-    float h = dht.readHumidity();
-    float t = dht.readTemperature();
-    if(isnan(h) || isnan(t)){
-    Serial.println("Khong the doc duoc DHT");
-    return;
-    }
-    gasSensor = analogRead(A0);
-    sendSensor(t,h,gasSensor);
-  }
 
 void sendSensor(int t, int h, int gasSensor){
     //Hiển thị nhiệt độ, độ ẩm trên LCD
@@ -128,6 +118,7 @@ void sendSensor(int t, int h, int gasSensor){
     lcd.setCursor(12,1);
     lcd.print(gasSensor);
     lcd.write((byte)1);
+    lcd.print(" ");
 
     //Hiển thị nhiệt độ, độ ẩm trên Serial
     Serial.print("Nhiet do: ");
@@ -141,6 +132,7 @@ void sendSensor(int t, int h, int gasSensor){
     Serial.print("Nong do khi gas: ");
     Serial.println(gasSensor);
 
+    //Đưa dữ liệu lên Firebase
     FirebaseJson json;
     json.add("nhietdo", t);
     json.add("doam", h);
@@ -159,6 +151,33 @@ void sendSensor(int t, int h, int gasSensor){
   }
 
 void loop() {
-  Sensor();
+    int buzzerTimes = 5;
+    unsigned long delayBuzzer = 250;
+    float h = dht.readHumidity();
+    float t = dht.readTemperature() - 4;
+    
+    if (isnan(h) || isnan(t)){
+      Serial.println("Khong the doc duoc DHT");
+      return;
+    }
+    
+    gasSensor = analogRead(A0);
+    sendSensor(t, h, gasSensor);
+    
+    if (gasSensor > 200) {
+      lcd.setCursor(5, 0);
+      lcd.print("WARNING");
+      for(int i = 0; i < buzzerTimes; i++) {
+        tone(BUZZER_PIN, 6000, delayBuzzer);
+        digitalWrite(15, HIGH);
+        delay(delayBuzzer);
+        digitalWrite(15, LOW);
+        delay(delayBuzzer);
+      }
+    } else {
+      digitalWrite(15, LOW);
+      lcd.setCursor(5, 0);
+      lcd.print("NORMAL ");
+    }
   delay(2000);
 }
